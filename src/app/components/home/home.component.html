@@ -1,0 +1,53 @@
+<div class="home-container">
+  <div class="home-header">
+    <h1>Chào mừng, {{ user?.ten }}!</h1>
+    <button class="logout-button" (click)="logout()">
+      Đăng xuất
+    </button>
+  </div>
+
+  <div class="user-info-card">
+    <div class="card-header">
+      <h2>Thông tin cá nhân</h2>
+    </div>
+    
+    <div class="user-details">
+      <div class="detail-row">
+        <span class="label">Tên đăng nhập:</span>
+        <span class="value">{{ user?.username }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="label">Họ và tên:</span>
+        <span class="value">{{ user?.ten }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="label">Email:</span>
+        <span class="value">{{ user?.email }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="label">Số điện thoại:</span>
+        <span class="value">{{ user?.soDienThoai }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="label">Ngày vào làm:</span>
+        <span class="value">{{ formatDate(user?.ngayVao) }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="label">Vai trò:</span>
+        <span class="value role-badge" [class.admin]="user?.role === 'admin'">
+          {{ user?.role === 'admin' ? 'Quản trị viên' : 'Người dùng' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="welcome-message">
+    <h3>Chào mừng bạn đến với hệ thống!</h3>
+    <p>Bạn đã đăng nhập thành công vào hệ thống quản lý nhân viên.</p>
+  </div>
+</div>

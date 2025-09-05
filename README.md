@@ -1,59 +1,114 @@
-# Testapp1
+# Ứng dụng Login - Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.1.
+Đây là ứng dụng đăng nhập được xây dựng bằng Angular với backend API thực.
 
-## Development server
+## Tính năng
 
-To start a local development server, run:
+- **Màn hình Login**: Form đăng nhập với username và password
+- **Màn hình Home**: Hiển thị thông tin người dùng sau khi đăng nhập thành công
+- **Real API Integration**: Kết nối với backend API tại localhost:8080
+- **Responsive Design**: Giao diện thân thiện trên mọi thiết bị
 
-```bash
-ng serve
+## Cấu trúc dự án
+
+```
+src/app/
+├── components/
+│   ├── login/
+│   │   ├── login.component.ts
+│   │   ├── login.component.html
+│   │   └── login.component.css
+│   └── home/
+│       ├── home.component.ts
+│       ├── home.component.html
+│       └── home.component.css
+├── models/
+│   └── user.model.ts
+├── services/
+│   └── auth.service.ts
+├── app.routes.ts
+├── app.ts
+└── app.html
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Cách sử dụng
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### 1. Cài đặt dependencies
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+### 2. Chạy ứng dụng
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Ứng dụng sẽ chạy tại `http://localhost:4200`
 
-To build the project run:
+### 3. Đảm bảo backend đang chạy
 
-```bash
-ng build
-```
+Backend API phải đang chạy tại `http://localhost:8080` trước khi sử dụng ứng dụng.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## API Integration
 
-## Running unit tests
+### Login API
+- **Endpoint**: `POST http://localhost:8080/user/login`
+- **Request Body**:
+  ```json
+  {
+    "username": "string",
+    "password": "string"
+  }
+  ```
+- **Response Success** (status: 200):
+  ```json
+  {
+    "status": 200,
+    "errorCode": null,
+    "errorDesc": null,
+    "data": {
+      "token": "jwt_token_here",
+      "username": "admin",
+      "name": "Admin User",
+      "joinDate": "2023-01-15",
+      "phoneNumber": "0123456789",
+      "email": "admin@company.com",
+      "role": "ADMIN"
+    }
+  }
+  ```
+- **Response Error** (status: 401):
+  ```json
+  {
+    "status": 401,
+    "errorCode": "INVALID_CREDENTIALS",
+    "errorDesc": "Tên đăng nhập hoặc mật khẩu không đúng"
+  }
+  ```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Công nghệ sử dụng
 
-```bash
-ng test
-```
+- **Angular 20**: Framework chính
+- **TypeScript**: Ngôn ngữ lập trình
+- **Angular Router**: Điều hướng giữa các trang
+- **Angular Forms**: Xử lý form đăng nhập
+- **Angular HttpClient**: Gọi API backend
+- **CSS3**: Styling với gradient và responsive design
 
-## Running end-to-end tests
+## Tính năng bảo mật
 
-For end-to-end (e2e) testing, run:
+- Validation form phía client
+- Kiểm tra authentication trước khi truy cập trang Home
+- Tự động redirect về login nếu chưa đăng nhập
+- Logout và xóa thông tin user khỏi session
 
-```bash
-ng e2e
-```
+## Mở rộng
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Để cải thiện ứng dụng:
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Thêm error handling chi tiết hơn cho network errors
+2. Implement JWT token storage và refresh
+3. Thêm loading states và progress indicators
+4. Thêm các tính năng bảo mật khác (2FA, captcha, etc.)
+5. Thêm remember me functionality
+6. Implement auto-logout khi token hết hạn
