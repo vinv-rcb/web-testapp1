@@ -40,9 +40,9 @@ export class HomeComponent implements OnInit {
   hasPermission(permission: string): boolean {
     if (!this.user) return false;
     
-    // Kiểm tra quyền cụ thể từ permissions array
-    if (this.user.permissions && Array.isArray(this.user.permissions)) {
-      return this.user.permissions.includes(permission);
+    // Admin có tất cả quyền
+    if (this.user.role === 'ADMIN') {
+      return true;
     }
     
     // Kiểm tra role trực tiếp
@@ -50,9 +50,13 @@ export class HomeComponent implements OnInit {
       return true;
     }
     
+    // Kiểm tra quyền cụ thể từ permissions array
+    if (this.user.permissions && Array.isArray(this.user.permissions)) {
+      return this.user.permissions.includes(permission);
+    }
+    
     // Mapping role-based permissions
     const rolePermissions: { [key: string]: string[] } = {
-      'R_ADMIN': ['R_ADMIN', 'R_LOGS_MANAGE', 'R_MONITOR', 'R_OPTI', 'R_TEAMLEAD'],
       'R_LOGS_MANAGE': ['R_LOGS_MANAGE'],
       'R_MONITOR': ['R_MONITOR'],
       'R_OPTI': ['R_OPTI'],

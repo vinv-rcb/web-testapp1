@@ -54,9 +54,9 @@ export class TeamleadComponent implements OnInit {
   hasPermission(permission: string): boolean {
     if (!this.user) return false;
     
-    // Kiểm tra quyền cụ thể từ permissions array
-    if (this.user.permissions && Array.isArray(this.user.permissions)) {
-      return this.user.permissions.includes(permission);
+    // Admin có tất cả quyền
+    if (this.user.role === 'R_ADMIN') {
+      return true;
     }
     
     // Kiểm tra role trực tiếp
@@ -64,9 +64,9 @@ export class TeamleadComponent implements OnInit {
       return true;
     }
     
-    // Admin có tất cả quyền
-    if (this.user.role === 'R_ADMIN') {
-      return true;
+    // Kiểm tra quyền cụ thể từ permissions array
+    if (this.user.permissions && Array.isArray(this.user.permissions)) {
+      return this.user.permissions.includes(permission);
     }
     
     return false;
