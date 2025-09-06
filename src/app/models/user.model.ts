@@ -46,3 +46,46 @@ export interface RegisterResponse {
     message: string;
   };
 }
+
+// Interface cho user trong danh sách admin
+export interface AdminUser {
+  username: string;
+  phone: string;
+  email: string;
+  role: string | null;
+  status: string;
+}
+
+// Interface cho response API list users
+export interface ListUsersResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  listUser: AdminUser[];
+}
+
+// Interface cho request update user
+export interface UpdateUserRequest {
+  username: string;
+  role: string;
+  status: string;
+}
+
+// Interface cho response API update user
+export interface UpdateUserResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+}
+
+// Interface cho role options
+export interface RoleOption {
+  code: string;
+  name: string;
+}
+
+// Interface cho status options
+export interface StatusOption {
+  code: string;
+  name: string;
+}

@@ -1,0 +1,42 @@
+<div class="logs-container">
+  <div class="logs-header">
+    <h1>Quản lý Log</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goBack()">
+        ← Quay lại
+      </button>
+      <button class="btn btn-danger" (click)="logout()">
+        Đăng xuất
+      </button>
+    </div>
+  </div>
+
+  <div class="logs-content">
+    <div class="logs-card">
+      <h2>Hệ thống quản lý Log</h2>
+      <p>Đây là trang quản lý log dành cho người có quyền R_LOGS_MANAGE</p>
+      
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>Xem Log hệ thống</h3>
+          <p>Xem và tìm kiếm các log hoạt động của hệ thống</p>
+        </div>
+        
+        <div class="feature-item">
+          <h3>Xuất Log</h3>
+          <p>Xuất log ra file Excel, CSV hoặc PDF</p>
+        </div>
+        
+        <div class="feature-item">
+          <h3>Lọc Log</h3>
+          <p>Lọc log theo thời gian, mức độ, người dùng</p>
+        </div>
+        
+        <div class="feature-item">
+          <h3>Cấu hình Log</h3>
+          <p>Thiết lập các tham số ghi log hệ thống</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

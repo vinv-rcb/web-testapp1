@@ -46,6 +46,61 @@
     </div>
   </div>
 
+  <div class="menu-section">
+    <h3>Menu hệ thống</h3>
+    <div class="menu-grid">
+      <!-- Menu Quản trị - R_ADMIN -->
+      <div class="menu-item" *ngIf="hasPermission('R_ADMIN')" (click)="navigateTo('/admin')">
+        <div class="menu-icon admin-icon">
+          <i class="fas fa-cogs"></i>
+        </div>
+        <h4>Quản trị</h4>
+        <p>Quản lý hệ thống và người dùng</p>
+        <span class="permission-badge">R_ADMIN</span>
+      </div>
+
+      <!-- Menu Quản lý log - R_LOGS_MANAGE -->
+      <div class="menu-item" *ngIf="hasPermission('R_LOGS_MANAGE')" (click)="navigateTo('/logs')">
+        <div class="menu-icon logs-icon">
+          <i class="fas fa-file-alt"></i>
+        </div>
+        <h4>Quản lý Log</h4>
+        <p>Xem và quản lý log hệ thống</p>
+        <span class="permission-badge">R_LOGS_MANAGE</span>
+      </div>
+
+      <!-- Menu Quản lý bất thường Database - R_MONITOR -->
+      <div class="menu-item" *ngIf="hasPermission('R_MONITOR')" (click)="navigateTo('/monitor')">
+        <div class="menu-icon monitor-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h4>Giám sát Database</h4>
+        <p>Quản lý bất thường database</p>
+        <span class="permission-badge">R_MONITOR</span>
+      </div>
+
+      <!-- Menu Sự kiện tối ưu Database - R_OPTI -->
+      <div class="menu-item" *ngIf="hasPermission('R_OPTI')" (click)="navigateTo('/opti')">
+        <div class="menu-icon opti-icon">
+          <i class="fas fa-tachometer-alt"></i>
+        </div>
+        <h4>Tối ưu Database</h4>
+        <p>Sự kiện tối ưu database</p>
+        <span class="permission-badge">R_OPTI</span>
+      </div>
+
+      <!-- Menu Báo cáo - R_TEAMLEAD -->
+      <div class="menu-item" *ngIf="hasPermission('R_TEAMLEAD')" (click)="navigateTo('/teamlead')">
+        <div class="menu-icon teamlead-icon">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <h4>Báo cáo</h4>
+        <p>Tạo và xem báo cáo hệ thống</p>
+        <span class="permission-badge">R_TEAMLEAD</span>
+      </div>
+    </div>
+  </div>
+
   <div class="welcome-message">
     <h3>Chào mừng bạn đến với hệ thống!</h3>
     <p>Bạn đã đăng nhập thành công vào hệ thống quản lý nhân viên.</p>

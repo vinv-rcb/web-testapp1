@@ -123,6 +123,128 @@
   line-height: 1.6;
 }
 
+.menu-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.menu-section h3 {
+  color: #333;
+  margin: 0 0 25px 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.menu-item {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+}
+
+.menu-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: white;
+}
+
+.admin-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.logs-icon {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.monitor-icon {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.opti-icon {
+  background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+}
+
+.teamlead-icon {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+}
+
+.menu-item h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.menu-item p {
+  margin: 0 0 15px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.permission-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menu-item:hover .permission-badge {
+  background: #1976d2;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .menu-item {
+    padding: 20px;
+  }
+  
+  .menu-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .home-header {
     flex-direction: column;

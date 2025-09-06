@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../models/user.model';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,10 @@ export class AuthService {
   private readonly API_URL = 'http://172.20.10.13:8080';
   private currentUser: any = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    // Load user data from localStorage on service initialization
+    this.loadUserFromStorage();
+  }
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.API_URL}/sqlanalys/login`, loginRequest)
@@ -28,24 +31,98 @@ export class AuthService {
               email: response.data.email,
               role: response.data.role.toLowerCase()
             };
+            // Save to localStorage
+            this.saveUserToStorage();
           }
         })
       );
   }
 
   getCurrentUser(): any {
+    // If current user is not loaded, try to load from localStorage
+    if (!this.currentUser) {
+      this.loadUserFromStorage();
+    }
     return this.currentUser;
   }
 
   isLoggedIn(): boolean {
-    return this.currentUser !== null;
+    // Check current user first
+    if (this.currentUser !== null) {
+      return true;
+    }
+    
+    // Fallback to localStorage check
+    const token = localStorage.getItem('auth_token');
+    return token !== null && token !== '';
   }
 
   register(registerRequest: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.API_URL}/sqlanalys/register`, registerRequest);
   }
 
+  // API 4: Lấy danh sách user
+  getUsersList(): Observable<ListUsersResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    return this.http.get<ListUsersResponse>(`${this.API_URL}/sqlanalys/admin/list-user`, { headers });
+  }
+
+  // API 5: Cập nhật user (role và status)
+  updateUser(updateRequest: UpdateUserRequest): Observable<UpdateUserResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    return this.http.post<UpdateUserResponse>(`${this.API_URL}/sqlanalys/admin/update`, updateRequest, { headers });
+  }
+
+  getAccessToken(): string {
+    // First try to get from current user
+    if (this.currentUser?.token) {
+      return this.currentUser.token;
+    }
+    
+    // Fallback to localStorage
+    const token = localStorage.getItem('auth_token');
+    return token || '';
+  }
+
+  // Save user data to localStorage
+  private saveUserToStorage(): void {
+    if (this.currentUser) {
+      localStorage.setItem('current_user', JSON.stringify(this.currentUser));
+      localStorage.setItem('auth_token', this.currentUser.token);
+    }
+  }
+
+  // Load user data from localStorage
+  private loadUserFromStorage(): void {
+    try {
+      const userData = localStorage.getItem('current_user');
+      const token = localStorage.getItem('auth_token');
+      
+      if (userData && token) {
+        this.currentUser = JSON.parse(userData);
+        // Ensure token is up to date
+        this.currentUser.token = token;
+      }
+    } catch (error) {
+      console.error('Error loading user from localStorage:', error);
+      this.clearStorage();
+    }
+  }
+
+  // Clear localStorage
+  private clearStorage(): void {
+    localStorage.removeItem('current_user');
+    localStorage.removeItem('auth_token');
+  }
+
   logout(): void {
     this.currentUser = null;
+    this.clearStorage();
   }
 }

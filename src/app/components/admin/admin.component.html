@@ -1,0 +1,98 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Quản trị hệ thống</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goBack()">
+        ← Quay lại
+      </button>
+      <button class="btn btn-danger" (click)="logout()">
+        Đăng xuất
+      </button>
+    </div>
+  </div>
+
+  <div class="admin-content">
+    <div class="admin-card">
+      <h2>Quản lý người dùng</h2>
+      <p>Quản lý thông tin và phân quyền cho người dùng trong hệ thống</p>
+      
+      <!-- Thông báo -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        {{ errorMessage }}
+      </div>
+      
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Đang tải dữ liệu...</p>
+      </div>
+
+      <!-- Bảng danh sách user -->
+      <div *ngIf="!isLoading" class="table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Username</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usersList; let i = index" class="user-row">
+              <td>{{ i + 1 }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <select 
+                  [(ngModel)]="selectedRoles[user.username]" 
+                  class="form-select"
+                  [disabled]="isLoading">
+                  <option value="">Chọn role</option>
+                  <option 
+                    *ngFor="let role of roleOptions" 
+                    [value]="role.code">
+                    {{ role.name }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select 
+                  [(ngModel)]="selectedStatuses[user.username]" 
+                  class="form-select"
+                  [disabled]="isLoading">
+                  <option 
+                    *ngFor="let status of statusOptions" 
+                    [value]="status.code">
+                    {{ status.name }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <button 
+                  class="btn btn-update" 
+                  (click)="updateUser(user)"
+                  [disabled]="isLoading">
+                  Cập nhật
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Thông báo khi không có dữ liệu -->
+        <div *ngIf="usersList.length === 0" class="no-data">
+          <p>Không có dữ liệu người dùng</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
