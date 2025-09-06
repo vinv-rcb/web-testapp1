@@ -2,54 +2,38 @@
   <div class="login-card">
     <div class="login-header">
       <h2>Đăng nhập</h2>
-      <p>Vui lòng nhập thông tin đăng nhập của bạn</p>
+      <p>Đăng nhập bằng OAuth2 để tiếp tục</p>
     </div>
 
-    <form (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="username">Tên đăng nhập</label>
-        <input
-          type="text"
-          id="username"
-          [(ngModel)]="loginRequest.username"
-          name="username"
-          placeholder="Nhập tên đăng nhập"
-          required
-          [disabled]="isLoading"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Mật khẩu</label>
-        <input
-          type="password"
-          id="password"
-          [(ngModel)]="loginRequest.password"
-          name="password"
-          placeholder="Nhập mật khẩu"
-          required
-          [disabled]="isLoading"
-        />
-      </div>
-
+    <div class="oauth-login">
       <div class="error-message" *ngIf="errorMessage">
         {{ errorMessage }}
       </div>
 
       <button
-        type="submit"
-        class="login-button"
+        type="button"
+        class="oauth-button"
+        (click)="loginWithOAuth()"
         [disabled]="isLoading"
       >
-        <span *ngIf="!isLoading">Đăng nhập</span>
-        <span *ngIf="isLoading">Đang đăng nhập...</span>
+        <svg class="oauth-icon" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <span *ngIf="!isLoading">Đăng nhập với OAuth2</span>
+        <span *ngIf="isLoading">Đang chuyển hướng...</span>
       </button>
-    </form>
 
-    <div class="demo-credentials">
-      <h4>Thông tin demo:</h4>
-      <p><strong>Admin:</strong> username: admin, password: 123456</p>
-      <p><strong>User:</strong> username: user1, password: password</p>
+      <div class="oauth-info">
+        <p>Bạn sẽ được chuyển hướng đến trang đăng nhập OAuth2</p>
+        <p>Sau khi đăng nhập thành công, bạn sẽ được chuyển về trang chủ</p>
+      </div>
+    </div>
+
+    <div class="oauth-provider-info">
+      <h4>OAuth2 Provider:</h4>
+      <p><strong>Issuer:</strong> http://localhost:8080</p>
+      <p><strong>Client ID:</strong> angular-client</p>
+      <p><strong>Scopes:</strong> openid profile email</p>
     </div>
   </div>
 </div>

@@ -43,11 +43,20 @@
           {{ user?.role === 'admin' ? 'Quản trị viên' : 'Người dùng' }}
         </span>
       </div>
+      
+      <div class="detail-row">
+        <span class="label">Access Token:</span>
+        <span class="value token-info">{{ getTokenInfo() }}</span>
+      </div>
     </div>
   </div>
 
   <div class="welcome-message">
     <h3>Chào mừng bạn đến với hệ thống!</h3>
-    <p>Bạn đã đăng nhập thành công vào hệ thống quản lý nhân viên.</p>
+    <p>Bạn đã đăng nhập thành công bằng OAuth2 vào hệ thống quản lý nhân viên.</p>
+    <div class="oauth-info">
+      <p><strong>Phương thức đăng nhập:</strong> OAuth2/OpenID Connect</p>
+      <p><strong>Provider:</strong> http://localhost:8080</p>
+    </div>
   </div>
 </div>

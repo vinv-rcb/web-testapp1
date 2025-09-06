@@ -1,23 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LoginRequest } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
-  loginRequest: LoginRequest = {
-    username: '',
-    password: ''
-  };
-  
+export class LoginComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
 
@@ -26,31 +19,30 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  onSubmit(): void {
-    if (!this.loginRequest.username || !this.loginRequest.password) {
-      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin';
-      return;
+  ngOnInit(): void {
+    // Check if user is already logged in
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/home']);
     }
 
+    // Subscribe to user changes
+    this.authService.user$.subscribe(user => {
+      if (user) {
+        this.router.navigate(['/home']);
+      }
+    });
+  }
+
+  loginWithOAuth(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.login(this.loginRequest).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.status === 200 && response.data) {
-          // Login thành công, chuyển đến trang Home
-          this.router.navigate(['/home']);
-        } else {
-          // Login thất bại, hiển thị lỗi
-          this.errorMessage = response.errorDesc || 'Đăng nhập thất bại';
-        }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = 'Có lỗi xảy ra, vui lòng thử lại';
-        console.error('Login error:', error);
-      }
-    });
+    try {
+      this.authService.login();
+    } catch (error) {
+      this.isLoading = false;
+      this.errorMessage = 'Có lỗi xảy ra khi đăng nhập, vui lòng thử lại';
+      console.error('OAuth login error:', error);
+    }
   }
 }
