@@ -56,10 +56,6 @@
             <i class="fas fa-database"></i>
             Tổng số bản ghi: <strong>{{ totalElements }}</strong>
           </span>
-          <span class="api-message" *ngIf="apiMessage">
-            <i class="fas fa-info-circle"></i>
-            {{ apiMessage }}
-          </span>
           <div class="page-size-selector">
             <label for="pageSizeSelect">
               <i class="fas fa-list"></i>
@@ -141,9 +137,8 @@
                   <div class="warning-info" *ngIf="isUnexpected(log)">
                     <span class="warning-badge">
                       <i class="fas fa-exclamation-triangle"></i>
-                      Warning
+                      {{ getWarningMessage(log) }}
                     </span>
-                    <small class="warning-desc">{{ getWarningMessage(log) }}</small>
                   </div>
                   <div class="normal-info" *ngIf="!isUnexpected(log)">
                     <span class="normal-badge">
