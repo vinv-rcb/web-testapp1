@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 import { AdminUser, RoleOption, StatusOption, UpdateUserRequest } from '../../models/user.model';
 
 @Component({
@@ -40,7 +41,8 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -77,11 +79,13 @@ export class AdminComponent implements OnInit {
           this.initializeSelectedValues();
         } else {
           this.errorMessage = response.errorDesc || 'Lấy danh sách user không thành công';
+          this.toastService.error(this.errorMessage);
         }
       },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = 'Có lỗi xảy ra khi tải danh sách user';
+        this.toastService.error(this.errorMessage);
         console.error('Load users error:', error);
       }
     });
@@ -100,7 +104,7 @@ export class AdminComponent implements OnInit {
     const selectedStatus = this.selectedStatuses[user.username];
 
     if (!selectedRole || !selectedStatus) {
-      this.errorMessage = 'Vui lòng chọn đầy đủ role và status';
+      this.toastService.warning('Vui lòng chọn đầy đủ role và status');
       return;
     }
 
@@ -118,16 +122,16 @@ export class AdminComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         if (response.status === 200) {
-          this.successMessage = 'Cập nhật thành công';
+          this.toastService.success(`Cập nhật thành công cho user ${user.username}`);
           // Cập nhật lại danh sách
           this.loadUsersList();
         } else {
-          this.errorMessage = response.errorDesc || 'Cập nhật lỗi';
+          this.toastService.error(response.errorDesc || 'Cập nhật lỗi');
         }
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Cập nhật lỗi';
+        this.toastService.error('Cập nhật lỗi');
         console.error('Update user error:', error);
       }
     });
