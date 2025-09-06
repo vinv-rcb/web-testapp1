@@ -7,6 +7,7 @@ import { LogsComponent } from './components/logs/logs.component';
 import { MonitorComponent } from './components/monitor/monitor.component';
 import { OptiComponent } from './components/opti/opti.component';
 import { TeamleadComponent } from './components/teamlead/teamlead.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'monitor', component: MonitorComponent },
   { path: 'opti', component: OptiComponent },
   { path: 'teamlead', component: TeamleadComponent },
-  { path: '**', redirectTo: '/login' }
+  { path: '404', component: NotFoundComponent },
+  { path: '**', redirectTo: '/404' }
 ];

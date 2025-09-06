@@ -34,6 +34,14 @@ export class AuthService {
             // Save to localStorage
             this.saveUserToStorage();
           }
+        }),
+        tap({
+          error: (error) => {
+            console.error('Login API error:', error);
+            // Clear any existing user data on error
+            this.currentUser = null;
+            this.clearStorage();
+          }
         })
       );
   }

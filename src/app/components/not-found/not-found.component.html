@@ -1,0 +1,49 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <div class="error-code">
+      <h1>404</h1>
+    </div>
+    
+    <div class="error-message">
+      <h2>Trang không tìm thấy</h2>
+      <p>Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.</p>
+    </div>
+
+    <div class="error-illustration">
+      <div class="illustration">
+        <div class="robot">
+          <div class="robot-head">
+            <div class="robot-eye left-eye"></div>
+            <div class="robot-eye right-eye"></div>
+            <div class="robot-mouth"></div>
+          </div>
+          <div class="robot-body">
+            <div class="robot-arm left-arm"></div>
+            <div class="robot-arm right-arm"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-primary" (click)="goHome()">
+        <i class="fas fa-home"></i>
+        Về trang chủ
+      </button>
+      
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Quay lại
+      </button>
+      
+      <button class="btn btn-outline" (click)="goLogin()">
+        <i class="fas fa-sign-in-alt"></i>
+        Đăng nhập
+      </button>
+    </div>
+
+    <div class="help-text">
+      <p>Nếu bạn cho rằng đây là lỗi, vui lòng liên hệ với quản trị viên.</p>
+    </div>
+  </div>
+</div>

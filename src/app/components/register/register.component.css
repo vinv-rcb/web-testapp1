@@ -113,26 +113,6 @@
   transform: none;
 }
 
-.error-message {
-  background: #fee;
-  color: #c33;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  border-left: 4px solid #e74c3c;
-  font-size: 14px;
-}
-
-.success-message {
-  background: #efe;
-  color: #2c5;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  border-left: 4px solid #27ae60;
-  font-size: 14px;
-}
-
 /* Responsive */
 @media (max-width: 480px) {
   .register-container {

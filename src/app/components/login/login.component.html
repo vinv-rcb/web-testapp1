@@ -32,10 +32,6 @@
         />
       </div>
 
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
       <button
         type="submit"
         class="login-button"
@@ -48,12 +44,6 @@
 
     <div class="register-link">
       <p>Chưa có tài khoản? <a (click)="goToRegister()" class="register-link-text">Đăng ký ngay</a></p>
-    </div>
-
-    <div class="demo-credentials">
-      <h4>Thông tin demo:</h4>
-      <p><strong>Admin:</strong> username: admin, password: 123456</p>
-      <p><strong>User:</strong> username: user1, password: password</p>
     </div>
   </div>
 </div>
