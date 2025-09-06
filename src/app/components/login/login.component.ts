@@ -1,16 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { LoginRequest } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  loginRequest: LoginRequest = {
+    username: '',
+    password: ''
+  };
+  
   isLoading = false;
   errorMessage = '';
 
@@ -19,30 +26,31 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    // Check if user is already logged in
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/home']);
+  onSubmit(): void {
+    if (!this.loginRequest.username || !this.loginRequest.password) {
+      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin';
+      return;
     }
 
-    // Subscribe to user changes
-    this.authService.user$.subscribe(user => {
-      if (user) {
-        this.router.navigate(['/home']);
-      }
-    });
-  }
-
-  loginWithOAuth(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    try {
-      this.authService.login();
-    } catch (error) {
-      this.isLoading = false;
-      this.errorMessage = 'Có lỗi xảy ra khi đăng nhập, vui lòng thử lại';
-      console.error('OAuth login error:', error);
-    }
+    this.authService.login(this.loginRequest).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.status === 200 && response.data) {
+          // Login thành công, chuyển đến trang Home
+          this.router.navigate(['/home']);
+        } else {
+          // Login thất bại, hiển thị lỗi
+          this.errorMessage = response.errorDesc || 'Đăng nhập thất bại';
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = 'Có lỗi xảy ra, vui lòng thử lại';
+        console.error('Login error:', error);
+      }
+    });
   }
 }

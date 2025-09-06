@@ -101,16 +101,6 @@
   color: #f57c00;
 }
 
-.token-info {
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  background-color: #f8f9fa;
-  padding: 4px 8px;
-  border-radius: 4px;
-  color: #666;
-  word-break: break-all;
-}
-
 .welcome-message {
   background: white;
   border-radius: 12px;
@@ -128,28 +118,9 @@
 
 .welcome-message p {
   color: #666;
-  margin: 0 0 20px 0;
+  margin: 0;
   font-size: 16px;
   line-height: 1.6;
-}
-
-.oauth-info {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 20px;
-  border-left: 4px solid #4285f4;
-}
-
-.oauth-info p {
-  margin: 8px 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.oauth-info strong {
-  color: #333;
-  font-weight: 600;
 }
 
 @media (max-width: 768px) {
