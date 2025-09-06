@@ -54,8 +54,8 @@ export class TeamleadComponent implements OnInit {
   hasPermission(permission: string): boolean {
     if (!this.user) return false;
     
-    // Admin có tất cả quyền
-    if (this.user.role === 'R_ADMIN') {
+    // Admin có tất cả quyền (kiểm tra cả 'ADMIN' và 'R_ADMIN')
+    if (this.user.role === 'ADMIN' || this.user.role === 'R_ADMIN') {
       return true;
     }
     
@@ -173,29 +173,76 @@ export class TeamleadComponent implements OnInit {
         this.isLoading = false;
         
         if (response && response.status === 200) {
-          this.downloadFile(response.data, `BaoCaoTongHop_${Date.now()}.${type.toLowerCase()}`);
-          this.toastService.success(`Xuất báo cáo ${type} thành công`);
+          // Kiểm tra xem response.data có tồn tại không
+          if (response.data) {
+            this.downloadFile(response.data, `BaoCaoTongHop_${Date.now()}.${type.toLowerCase()}`);
+            this.toastService.success(`Xuất báo cáo ${type} thành công`);
+          } else {
+            this.toastService.error('Không có dữ liệu để xuất báo cáo');
+          }
         } else {
           this.toastService.error(response.errorDesc || 'Xuất báo cáo không thành công');
         }
       },
       error: (error) => {
         this.isLoading = false;
-        this.toastService.error('Có lỗi xảy ra, vui lòng thử lại');
         console.error('Error exporting report:', error);
+        
+        // Xử lý lỗi cụ thể
+        if (error.status === 401) {
+          this.toastService.error('Hết phiên đăng nhập, vui lòng đăng nhập lại');
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        } else if (error.status === 403) {
+          this.toastService.error('Bạn không có quyền xuất báo cáo');
+        } else if (error.status === 500) {
+          this.toastService.error('Lỗi server, vui lòng thử lại sau');
+        } else {
+          this.toastService.error('Có lỗi xảy ra khi xuất báo cáo, vui lòng thử lại');
+        }
       }
     });
   }
 
   // Download file
   downloadFile(data: any, filename: string): void {
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
+    try {
+      // Xác định MIME type dựa trên extension
+      const extension = filename.split('.').pop()?.toLowerCase();
+      let mimeType = 'application/octet-stream';
+      
+      if (extension === 'csv') {
+        mimeType = 'text/csv;charset=utf-8;';
+      } else if (extension === 'pdf') {
+        mimeType = 'application/pdf';
+      }
+      
+      // Tạo blob với MIME type phù hợp
+      const blob = new Blob([data], { type: mimeType });
+      
+      // Tạo URL object
+      const url = window.URL.createObjectURL(blob);
+      
+      // Tạo link download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.style.display = 'none';
+      
+      // Thêm vào DOM, click và xóa
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Giải phóng URL object
+      window.URL.revokeObjectURL(url);
+      
+      console.log(`File ${filename} đã được tải xuống thành công`);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      this.toastService.error('Có lỗi xảy ra khi tải file xuống');
+    }
   }
 
   // Chuyển trang

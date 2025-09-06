@@ -43,8 +43,8 @@ export class OptiComponent implements OnInit {
   hasPermission(permission: string): boolean {
     if (!this.user) return false;
     
-    // Admin có tất cả quyền
-    if (this.user.role === 'R_ADMIN') {
+    // Admin có tất cả quyền (kiểm tra cả 'ADMIN' và 'R_ADMIN')
+    if (this.user.role === 'ADMIN' || this.user.role === 'R_ADMIN') {
       return true;
     }
     

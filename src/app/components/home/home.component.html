@@ -39,7 +39,7 @@
       
       <div class="detail-row">
         <span class="label">Vai trò:</span>
-        <span class="value role-badge" [class.admin]="user?.role === 'R_ADMIN'">
+        <span class="value role-badge" [class.admin]="user?.role === 'ADMIN' || user?.role === 'R_ADMIN'">
           {{ getRoleDisplayName(user?.role) }}
         </span>
       </div>

@@ -40,8 +40,8 @@ export class HomeComponent implements OnInit {
   hasPermission(permission: string): boolean {
     if (!this.user) return false;
     
-    // Admin có tất cả quyền
-    if (this.user.role === 'ADMIN') {
+    // Admin có tất cả quyền (kiểm tra cả 'ADMIN' và 'R_ADMIN')
+    if (this.user.role === 'ADMIN' || this.user.role === 'R_ADMIN') {
       return true;
     }
     
@@ -73,6 +73,7 @@ export class HomeComponent implements OnInit {
 
   getRoleDisplayName(role: string): string {
     const roleNames: { [key: string]: string } = {
+      'ADMIN': 'Quản trị viên',
       'R_ADMIN': 'Quản trị viên',
       'R_LOGS_MANAGE': 'Quản lý Log',
       'R_MONITOR': 'Giám sát Database',
