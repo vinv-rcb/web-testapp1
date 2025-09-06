@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, DatabaseListResponse, LogListResponse } from '../models/user.model';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, DatabaseListResponse, LogListResponse, UnexpectedLogsResponse } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -151,6 +151,17 @@ export class AuthService {
     }
     
     return this.http.get<LogListResponse>(url, { headers });
+  }
+
+  // API: Lấy danh sách log bất thường
+  getUnexpectedLogs(page: number = 0, size: number = 10): Observable<UnexpectedLogsResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    const url = `${this.API_URL}/sqlanalys/query-unexpected?page=${page}&size=${size}`;
+    return this.http.get<UnexpectedLogsResponse>(url, { headers });
   }
 
   logout(): void {

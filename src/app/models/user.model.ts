@@ -119,3 +119,21 @@ export interface LogListResponse {
   errorDesc?: string | null;
   data: DatabaseLog[];
 }
+
+// Interface cho UnexpectedLog
+export interface UnexpectedLog {
+  database_name: string;
+  sql: string;
+  exe_time: number;
+  exe_count: number;
+}
+
+// Interface cho response API unexpected logs
+export interface UnexpectedLogsResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  totalPages?: number;
+  totalElements?: number;
+  listLog: UnexpectedLog[];
+}

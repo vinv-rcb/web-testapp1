@@ -10,6 +10,10 @@
     </div>
     
     <div class="header-actions">
+      <button class="btn btn-primary" (click)="loadLogList()" [disabled]="isLoadingLogs">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoadingLogs"></i>
+        Làm mới
+      </button>
       <button class="btn btn-secondary" (click)="goBack()">
         <i class="fas fa-arrow-left"></i>
         Quay lại
@@ -18,41 +22,6 @@
         <i class="fas fa-sign-out-alt"></i>
         Đăng xuất
       </button>
-    </div>
-  </div>
-
-  <!-- Filter Section -->
-  <div class="filter-section">
-    <div class="filter-card">
-      <div class="filter-content">
-        <div class="filter-group">
-          <label for="databaseSelect">
-            <i class="fas fa-filter"></i>
-            Chọn Database:
-          </label>
-          <select 
-            id="databaseSelect"
-            [(ngModel)]="selectedDatabase"
-            (change)="onDatabaseChange()"
-            class="database-select"
-            [disabled]="isLoading"
-          >
-            <option 
-              *ngFor="let db of databaseList" 
-              [value]="db.database_name"
-            >
-              {{ db.database_name }}
-            </option>
-          </select>
-        </div>
-        
-        <div class="filter-info">
-          <span class="info-text">
-            <i class="fas fa-info-circle"></i>
-            Hiển thị log cho: <strong>{{ selectedDatabase }}</strong>
-          </span>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -72,15 +41,38 @@
           <i class="fas fa-list"></i>
           Danh sách Log SQL
         </h3>
-        <div class="table-actions">
-          <button 
-            class="btn btn-primary btn-sm" 
-            (click)="loadLogList()"
-            [disabled]="isLoadingLogs"
-          >
-            <i class="fas fa-sync-alt" [class.fa-spin]="isLoadingLogs"></i>
-            Làm mới
-          </button>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-content">
+          <div class="filter-group">
+            <label for="databaseSelect">
+              <i class="fas fa-filter"></i>
+              Chọn Database:
+            </label>
+            <select 
+              id="databaseSelect"
+              [(ngModel)]="selectedDatabase"
+              (change)="onDatabaseChange()"
+              class="database-select"
+              [disabled]="isLoading"
+            >
+              <option 
+                *ngFor="let db of databaseList" 
+                [value]="db.database_name"
+              >
+                {{ db.database_name }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-info">
+            <span class="info-text">
+              <i class="fas fa-info-circle"></i>
+              Hiển thị log cho: <strong>{{ selectedDatabase }}</strong>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -162,12 +154,6 @@
             <i class="fas fa-list"></i>
             Tổng cộng: <strong>{{ logList.length }}</strong> bản ghi
           </span>
-        </div>
-        <div class="footer-actions">
-          <button class="btn btn-outline btn-sm" (click)="loadLogList()">
-            <i class="fas fa-sync-alt"></i>
-            Làm mới dữ liệu
-          </button>
         </div>
       </div>
     </div>

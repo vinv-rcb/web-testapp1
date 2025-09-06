@@ -1,40 +1,177 @@
 <div class="monitor-container">
+  <!-- Header -->
   <div class="monitor-header">
-    <h1>Quản lý bất thường Database</h1>
+    <div class="header-content">
+      <h1>
+        <i class="fas fa-exclamation-triangle"></i>
+        Quản lý bất thường Database
+      </h1>
+      <p>Phát hiện và theo dõi các truy vấn SQL bất thường</p>
+    </div>
+    
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="goBack()">
-        ← Quay lại
+      <button class="btn btn-primary" (click)="refreshData()" [disabled]="isLoading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+        Làm mới
       </button>
-      <button class="btn btn-danger" (click)="logout()">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Quay lại
+      </button>
+      <button class="btn btn-outline" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
         Đăng xuất
       </button>
     </div>
   </div>
 
-  <div class="monitor-content">
-    <div class="monitor-card">
-      <h2>Hệ thống giám sát Database</h2>
-      <p>Đây là trang quản lý bất thường database dành cho người có quyền R_MONITOR</p>
-      
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h3>Giám sát Real-time</h3>
-          <p>Theo dõi trạng thái database theo thời gian thực</p>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Đang tải dữ liệu log bất thường...</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading" class="monitor-content">
+    <!-- No Data Message -->
+    <div *ngIf="!hasData" class="no-data-container">
+      <div class="no-data-content">
+        <i class="fas fa-shield-check"></i>
+        <h3>Không phát hiện truy vấn bất thường nào</h3>
+        <p>Hệ thống đang hoạt động bình thường, không có truy vấn SQL nào vượt quá ngưỡng cảnh báo.</p>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div *ngIf="hasData" class="data-container">
+      <div class="table-container">
+        <div class="table-header">
+          <h3>
+            <i class="fas fa-list"></i>
+            Danh sách Log Bất thường
+          </h3>
+          <div class="table-info">
+            <span class="total-info">
+              <i class="fas fa-database"></i>
+              Tổng số bản ghi: <strong>{{ totalElements }}</strong>
+            </span>
+          </div>
         </div>
-        
-        <div class="feature-item">
-          <h3>Cảnh báo bất thường</h3>
-          <p>Nhận thông báo khi có sự cố bất thường xảy ra</p>
+
+        <div class="table-wrapper">
+          <table class="monitor-table">
+            <thead>
+              <tr>
+                <th class="col-database">
+                  <i class="fas fa-database"></i>
+                  Database
+                </th>
+                <th class="col-sql">
+                  <i class="fas fa-code"></i>
+                  Câu lệnh SQL
+                </th>
+                <th class="col-time">
+                  <i class="fas fa-clock"></i>
+                  Thời gian thực thi
+                </th>
+                <th class="col-count">
+                  <i class="fas fa-repeat"></i>
+                  Số lần thực hiện
+                </th>
+                <th class="col-warning">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  Chỉ báo
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of unexpectedLogs; let i = index" class="log-row" [class.unexpected]="isUnexpected(log)">
+                <td class="col-database">
+                  <div class="database-info">
+                    <span class="database-name">{{ log.database_name }}</span>
+                  </div>
+                </td>
+                <td class="col-sql">
+                  <div class="sql-content">
+                    <code class="sql-query">{{ log.sql }}</code>
+                  </div>
+                </td>
+                <td class="col-time">
+                  <div class="time-info">
+                    <span class="execution-time" [class.high-time]="log.exe_time > 500">
+                      {{ formatExecutionTime(log.exe_time) }}
+                    </span>
+                    <small class="time-label">thời gian thực thi</small>
+                  </div>
+                </td>
+                <td class="col-count">
+                  <div class="count-info">
+                    <span class="execution-count" [class.high-count]="log.exe_count > 100">
+                      {{ log.exe_count }}
+                    </span>
+                    <small class="count-label">lần thực hiện</small>
+                  </div>
+                </td>
+                <td class="col-warning">
+                  <div class="warning-info" *ngIf="isUnexpected(log)">
+                    <span class="warning-badge">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      Warning
+                    </span>
+                    <small class="warning-desc">{{ getWarningMessage(log) }}</small>
+                  </div>
+                  <div class="normal-info" *ngIf="!isUnexpected(log)">
+                    <span class="normal-badge">
+                      <i class="fas fa-check-circle"></i>
+                      Normal
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        
-        <div class="feature-item">
-          <h3>Phân tích hiệu suất</h3>
-          <p>Phân tích và đánh giá hiệu suất database</p>
-        </div>
-        
-        <div class="feature-item">
-          <h3>Báo cáo sự cố</h3>
-          <p>Tạo báo cáo chi tiết về các sự cố database</p>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="totalPages > 1">
+          <div class="pagination-info">
+            <span class="page-info">
+              Trang {{ currentPage + 1 }} / {{ totalPages }}
+            </span>
+          </div>
+          
+          <div class="pagination-controls">
+            <button 
+              class="btn btn-pagination" 
+              (click)="previousPage()" 
+              [disabled]="currentPage === 0"
+            >
+              <i class="fas fa-chevron-left"></i>
+              Trước
+            </button>
+            
+            <div class="page-numbers">
+              <button 
+                *ngFor="let page of getPageNumbers()" 
+                class="btn btn-page" 
+                [class.active]="page === currentPage"
+                (click)="goToPage(page)"
+              >
+                {{ page + 1 }}
+              </button>
+            </div>
+            
+            <button 
+              class="btn btn-pagination" 
+              (click)="nextPage()" 
+              [disabled]="currentPage === totalPages - 1"
+            >
+              Sau
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>

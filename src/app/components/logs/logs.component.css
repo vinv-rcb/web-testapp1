@@ -46,15 +46,9 @@
 
 /* Filter Section */
 .filter-section {
-  margin-bottom: 30px;
-}
-
-.filter-card {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e1e5e9;
+  padding: 20px 30px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e1e5e9;
 }
 
 .filter-content {
@@ -158,9 +152,6 @@
 }
 
 .table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 25px 30px;
   border-bottom: 1px solid #e1e5e9;
   background: #f8f9fa;
@@ -178,11 +169,6 @@
 
 .table-header h3 i {
   color: #667eea;
-}
-
-.table-actions {
-  display: flex;
-  gap: 12px;
 }
 
 /* Table */
@@ -359,7 +345,7 @@
 /* Table Footer */
 .table-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 20px 30px;
   background: #f8f9fa;
@@ -382,11 +368,6 @@
 
 .total-count i {
   color: #667eea;
-}
-
-.footer-actions {
-  display: flex;
-  gap: 12px;
 }
 
 /* Buttons */
@@ -455,6 +436,7 @@
   .filter-content {
     flex-direction: column;
     align-items: stretch;
+    gap: 15px;
   }
   
   .filter-group {
@@ -478,14 +460,8 @@
     justify-content: center;
   }
   
-  .table-header {
-    flex-direction: column;
-    gap: 15px;
-    align-items: stretch;
-  }
-  
-  .table-actions {
-    justify-content: center;
+  .filter-section {
+    padding: 15px 20px;
   }
   
   .logs-table th,
@@ -502,9 +478,7 @@
   }
   
   .table-footer {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
+    padding: 15px 20px;
   }
 }
 
