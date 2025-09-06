@@ -124,7 +124,7 @@ export interface LogListResponse {
 export interface UnexpectedLog {
   database_name: string;
   sql: string;
-  exe_time: number;
+  exec_time: number;
   exe_count: number;
 }
 

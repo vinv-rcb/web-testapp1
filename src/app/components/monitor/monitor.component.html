@@ -1,6 +1,6 @@
-<div class="monitor-container">
+<div class="management-container">
   <!-- Header -->
-  <div class="monitor-header">
+  <div class="management-header">
     <div class="header-content">
       <h1>
         <i class="fas fa-exclamation-triangle"></i>
@@ -34,7 +34,7 @@
   </div>
 
   <!-- Content -->
-  <div *ngIf="!isLoading" class="monitor-content">
+  <div *ngIf="!isLoading" class="management-card">
     <!-- No Data Message -->
     <div *ngIf="!hasData" class="no-data-container">
       <div class="no-data-content">
@@ -45,23 +45,39 @@
     </div>
 
     <!-- Data Table -->
-    <div *ngIf="hasData" class="data-container">
-      <div class="table-container">
-        <div class="table-header">
-          <h3>
-            <i class="fas fa-list"></i>
-            Danh sách Log Bất thường
-          </h3>
-          <div class="table-info">
-            <span class="total-info">
-              <i class="fas fa-database"></i>
-              Tổng số bản ghi: <strong>{{ totalElements }}</strong>
-            </span>
+    <div *ngIf="hasData" class="table-container">
+      <div class="table-header">
+        <h3>
+          <i class="fas fa-list"></i>
+          Danh sách Log Bất thường
+        </h3>
+        <div class="table-info">
+          <span class="total-info">
+            <i class="fas fa-database"></i>
+            Tổng số bản ghi: <strong>{{ totalElements }}</strong>
+          </span>
+          <div class="page-size-selector">
+            <label for="pageSizeSelect">
+              <i class="fas fa-list"></i>
+              Hiển thị:
+            </label>
+            <select 
+              id="pageSizeSelect" 
+              [(ngModel)]="pageSize" 
+              (change)="onPageSizeSelectChange($event)"
+              class="page-size-select"
+              [disabled]="isPaginationLoading"
+            >
+              <option *ngFor="let size of pageSizeOptions" [value]="size">
+                {{ size }} bản ghi
+              </option>
+            </select>
           </div>
         </div>
+      </div>
 
-        <div class="table-wrapper">
-          <table class="monitor-table">
+      <div class="table-wrapper">
+        <table class="management-table">
             <thead>
               <tr>
                 <th class="col-database">
@@ -87,10 +103,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let log of unexpectedLogs; let i = index" class="log-row" [class.unexpected]="isUnexpected(log)">
+              <tr *ngFor="let log of unexpectedLogs; let i = index" class="table-row" [class.unexpected]="isUnexpected(log)">
                 <td class="col-database">
                   <div class="database-info">
-                    <span class="database-name">{{ log.database_name }}</span>
+                    <span class="database-label">
+                      <i class="fas fa-database"></i>
+                      {{ log.database_name }}
+                    </span>
                   </div>
                 </td>
                 <td class="col-sql">
@@ -100,15 +119,17 @@
                 </td>
                 <td class="col-time">
                   <div class="time-info">
-                    <span class="execution-time" [class.high-time]="log.exe_time > 500">
-                      {{ formatExecutionTime(log.exe_time) }}
+                    <span class="execution-time-label" [ngClass]="log.exec_time > 500 ? 'slow' : 'fast'">
+                      <i class="fas fa-clock"></i>
+                      {{ log.exec_time }}
                     </span>
                     <small class="time-label">thời gian thực thi</small>
                   </div>
                 </td>
                 <td class="col-count">
                   <div class="count-info">
-                    <span class="execution-count" [class.high-count]="log.exe_count > 100">
+                    <span class="execution-count-label" [ngClass]="log.exe_count > 100 ? 'high' : 'normal'">
+                      <i class="fas fa-repeat"></i>
                       {{ log.exe_count }}
                     </span>
                     <small class="count-label">lần thực hiện</small>
@@ -138,42 +159,79 @@
         <div class="pagination-container" *ngIf="totalPages > 1">
           <div class="pagination-info">
             <span class="page-info">
+              <i class="fas fa-info-circle"></i>
+              Hiển thị {{ getCurrentPageInfo() }} bản ghi
+            </span>
+            <span class="page-info">
+              <i class="fas fa-layer-group"></i>
               Trang {{ currentPage + 1 }} / {{ totalPages }}
             </span>
           </div>
           
           <div class="pagination-controls">
+            <!-- First Page Button -->
+            <button 
+              class="btn btn-pagination btn-first" 
+              (click)="goToPage(0)" 
+              [disabled]="!canGoPrevious() || isPaginationLoading"
+              title="Trang đầu"
+            >
+              <i class="fas fa-angle-double-left"></i>
+            </button>
+            
+            <!-- Previous Page Button -->
             <button 
               class="btn btn-pagination" 
               (click)="previousPage()" 
-              [disabled]="currentPage === 0"
+              [disabled]="!canGoPrevious() || isPaginationLoading"
+              title="Trang trước"
             >
               <i class="fas fa-chevron-left"></i>
               Trước
             </button>
             
+            <!-- Page Numbers -->
             <div class="page-numbers">
               <button 
                 *ngFor="let page of getPageNumbers()" 
                 class="btn btn-page" 
                 [class.active]="page === currentPage"
+                [disabled]="isPaginationLoading"
                 (click)="goToPage(page)"
+                [title]="'Trang ' + (page + 1)"
               >
                 {{ page + 1 }}
               </button>
             </div>
             
+            <!-- Next Page Button -->
             <button 
               class="btn btn-pagination" 
               (click)="nextPage()" 
-              [disabled]="currentPage === totalPages - 1"
+              [disabled]="!canGoNext() || isPaginationLoading"
+              title="Trang sau"
             >
               Sau
               <i class="fas fa-chevron-right"></i>
             </button>
+            
+            <!-- Last Page Button -->
+            <button 
+              class="btn btn-pagination btn-last" 
+              (click)="goToPage(totalPages - 1)" 
+              [disabled]="!canGoNext() || isPaginationLoading"
+              title="Trang cuối"
+            >
+              <i class="fas fa-angle-double-right"></i>
+            </button>
+          </div>
+          
+          <!-- Pagination Loading Indicator -->
+          <div class="pagination-loading" *ngIf="isPaginationLoading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Đang tải...</span>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>

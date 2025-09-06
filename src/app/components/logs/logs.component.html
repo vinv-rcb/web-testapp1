@@ -1,6 +1,6 @@
-<div class="logs-container">
+<div class="management-container">
   <!-- Header -->
-  <div class="logs-header">
+  <div class="management-header">
     <div class="header-content">
       <h1>
         <i class="fas fa-database"></i>
@@ -34,7 +34,7 @@
   </div>
 
   <!-- Logs Table -->
-  <div *ngIf="!isLoading" class="logs-content">
+  <div *ngIf="!isLoading" class="management-card">
     <div class="table-container">
       <div class="table-header">
         <h3>
@@ -55,7 +55,7 @@
               id="databaseSelect"
               [(ngModel)]="selectedDatabase"
               (change)="onDatabaseChange()"
-              class="database-select"
+              class="form-select"
               [disabled]="isLoading"
             >
               <option 
@@ -86,7 +86,7 @@
 
       <!-- Table -->
       <div *ngIf="!isLoadingLogs" class="table-wrapper">
-        <table class="logs-table">
+        <table class="management-table">
           <thead>
             <tr>
               <th class="col-database">
@@ -112,15 +112,18 @@
               <td colspan="4">
                 <div class="no-data-content">
                   <i class="fas fa-inbox"></i>
-                  <p>Không có dữ liệu log</p>
-                  <small>Chọn database khác hoặc thử lại sau</small>
+                  <h3>Không có dữ liệu log</h3>
+                  <p>Chọn database khác hoặc thử lại sau</p>
                 </div>
               </td>
             </tr>
-            <tr *ngFor="let log of logList; let i = index" class="log-row">
+            <tr *ngFor="let log of logList; let i = index" class="table-row">
               <td class="col-database">
                 <div class="database-info">
-                  <span class="database-name">{{ log.database_name }}</span>
+                  <span class="database-label">
+                    <i class="fas fa-database"></i>
+                    {{ log.database_name }}
+                  </span>
                 </div>
               </td>
               <td class="col-sql">
@@ -130,15 +133,19 @@
               </td>
               <td class="col-time">
                 <div class="time-info">
-                  <span class="execution-time" [class.slow]="log.exec_time > 1000">
-                    {{ formatExecutionTime(log.exec_time) }}
+                  <span class="execution-time-label" [ngClass]="log.exec_time > 1000 ? 'slow' : 'fast'">
+                    <i class="fas fa-clock"></i>
+                    {{ log.exec_time }}
                   </span>
                   <small class="time-label">thời gian thực thi</small>
                 </div>
               </td>
               <td class="col-count">
                 <div class="count-info">
-                  <span class="execution-count">{{ log.exe_count }}</span>
+                  <span class="execution-count-label" [ngClass]="log.exe_count > 100 ? 'high' : 'normal'">
+                    <i class="fas fa-repeat"></i>
+                    {{ log.exe_count }}
+                  </span>
                   <small class="count-label">lần thực thi</small>
                 </div>
               </td>

@@ -17,7 +17,6 @@ export class AdminComponent implements OnInit {
   user: any = null;
   usersList: AdminUser[] = [];
   isLoading = false;
-  errorMessage = '';
   successMessage = '';
 
   // Role options
@@ -68,7 +67,6 @@ export class AdminComponent implements OnInit {
 
   loadUsersList(): void {
     this.isLoading = true;
-    this.errorMessage = '';
     this.successMessage = '';
 
     this.authService.getUsersList().subscribe({
@@ -78,14 +76,12 @@ export class AdminComponent implements OnInit {
           this.usersList = response.listUser || [];
           this.initializeSelectedValues();
         } else {
-          this.errorMessage = response.errorDesc || 'Lấy danh sách user không thành công';
-          this.toastService.error(this.errorMessage);
+          this.toastService.error(response.errorDesc || 'Lấy danh sách user không thành công');
         }
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Có lỗi xảy ra khi tải danh sách user';
-        this.toastService.error(this.errorMessage);
+        this.toastService.error('Có lỗi xảy ra khi tải danh sách user');
         console.error('Load users error:', error);
       }
     });
@@ -109,7 +105,6 @@ export class AdminComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
     this.successMessage = '';
 
     const updateRequest: UpdateUserRequest = {

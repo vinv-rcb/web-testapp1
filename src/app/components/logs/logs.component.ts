@@ -90,6 +90,7 @@ export class LogsComponent implements OnInit {
       next: (response) => {
         this.isLoadingLogs = false;
         if (response && response.status === 200) {
+          // Hiển thị data trực tiếp từ API
           this.logList = response.data || [];
         } else if (response && response.status !== 200) {
           if (response.errorCode === '401') {
@@ -120,16 +121,6 @@ export class LogsComponent implements OnInit {
     this.loadLogList();
   }
 
-  // Format thời gian xử lý
-  formatExecutionTime(time: number): string {
-    if (time < 1000) {
-      return `${time}ms`;
-    } else if (time < 60000) {
-      return `${(time / 1000).toFixed(2)}s`;
-    } else {
-      return `${(time / 60000).toFixed(2)}m`;
-    }
-  }
 
   logout(): void {
     this.authService.logout();
