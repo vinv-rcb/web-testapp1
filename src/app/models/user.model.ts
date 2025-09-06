@@ -175,6 +175,8 @@ export interface MarkDoneResponse {
 export interface LogHint {
   database_name: string;
   sql: string;
+  exec_time: number;
+  exe_count: number;
   suggestion: string;
   is_resolved: boolean;
 }
@@ -182,11 +184,12 @@ export interface LogHint {
 // Interface cho response API log hint
 export interface LogHintResponse {
   status: number;
-  errorCode?: string | null;
-  errorDesc?: string | null;
+  errorcode?: string | null;
+  errordes?: string | null;
   totalPages?: number;
   totalElements?: number;
   listLog: LogHint[];
+  message?: string;
 }
 
 // Interface cho response API create report

@@ -135,9 +135,13 @@
             <tr *ngIf="logList.length === 0" class="no-data">
               <td colspan="4">
                 <div class="no-data-content">
-                  <i class="fas fa-inbox"></i>
-                  <h3>Không có dữ liệu log</h3>
-                  <p>Chọn database khác hoặc thử lại sau</p>
+                  <div class="no-data-icon">
+                    <i class="fas fa-database"></i>
+                  </div>
+                  <div class="no-data-text">
+                    <h3>Không có dữ liệu log</h3>
+                    <p>Chọn database khác hoặc thử lại sau</p>
+                  </div>
                 </div>
               </td>
             </tr>
