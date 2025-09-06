@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, DatabaseListResponse, LogListResponse, UnexpectedLogsResponse } from '../models/user.model';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, DatabaseListResponse, LogListResponse, UnexpectedLogsResponse, DatabaseSuggestion, SuggestionsResponse, MarkDoneRequest, MarkDoneResponse, LogHint, LogHintResponse, CreateReportResponse, ExportReportRequest, ExportReportResponse } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -138,8 +138,34 @@ export class AuthService {
     return this.http.get<DatabaseListResponse>(`${this.API_URL}/sqlanalys/database`, { headers });
   }
 
-  // API: Lấy danh sách log theo database
-  getLogList(database?: string): Observable<LogListResponse> {
+  // API: Lấy danh sách log theo database với phân trang
+  getLogList(database?: string, page: number = 0, size: number = 10): Observable<LogListResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    let url = `${this.API_URL}/sqlanalys/log`;
+    const params = new URLSearchParams();
+    
+    if (database && database !== 'Tất cả') {
+      params.append('database', database);
+    }
+    
+    // Thêm tham số phân trang
+    params.append('page', page.toString());
+    params.append('size', size.toString());
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
+    console.log('API URL:', url);
+    return this.http.get<LogListResponse>(url, { headers });
+  }
+
+  // API: Lấy danh sách log theo database (không phân trang) - fallback
+  getLogListSimple(database?: string): Observable<LogListResponse> {
     const headers = {
       'Authorization': `Bearer ${this.getAccessToken()}`,
       'Content-Type': 'application/json'
@@ -150,6 +176,7 @@ export class AuthService {
       url += `?database=${encodeURIComponent(database)}`;
     }
     
+    console.log('API URL (simple):', url);
     return this.http.get<LogListResponse>(url, { headers });
   }
 
@@ -162,6 +189,65 @@ export class AuthService {
     
     const url = `${this.API_URL}/sqlanalys/query-unexpected?page=${page}&size=${size}`;
     return this.http.get<UnexpectedLogsResponse>(url, { headers });
+  }
+
+  // API: Lấy danh sách suggestions theo database
+  getSuggestions(database?: string): Observable<SuggestionsResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    let url = `${this.API_URL}/sqlanalys/suggestion`;
+    if (database && database !== 'Tất cả') {
+      url += `?database=${encodeURIComponent(database)}`;
+    }
+    
+    return this.http.get<SuggestionsResponse>(url, { headers });
+  }
+
+  // API: Đánh dấu suggestion đã hoàn thành
+  markSuggestionDone(request: MarkDoneRequest): Observable<MarkDoneResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    return this.http.post<MarkDoneResponse>(`${this.API_URL}/sqlanalys/suggestion/done`, request, { headers });
+  }
+
+  // API: Lấy danh sách log hint với phân trang
+  getLogHints(page: number = 0, size: number = 10): Observable<LogHintResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    const url = `${this.API_URL}/sqlanalys/log-hint?page=${page}&size=${size}`;
+    return this.http.get<LogHintResponse>(url, { headers });
+  }
+
+  // API: Tạo báo cáo tổng hợp
+  createReport(): Observable<CreateReportResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    return this.http.get<CreateReportResponse>(`${this.API_URL}/sqlanalys/create-report`, { headers });
+  }
+
+  // API: Xuất báo cáo (CSV hoặc PDF)
+  exportReport(request: ExportReportRequest): Observable<ExportReportResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    return this.http.post<ExportReportResponse>(`${this.API_URL}/sqlanalys/report`, request, { 
+      headers,
+      responseType: 'blob' as 'json' // Để xử lý file download
+    });
   }
 
   logout(): void {

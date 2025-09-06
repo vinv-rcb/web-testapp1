@@ -1,40 +1,289 @@
-<div class="teamlead-container">
-  <div class="teamlead-header">
-    <h1>Báo cáo</h1>
+<div class="management-container">
+  <!-- Header -->
+  <div class="management-header">
+    <div class="header-content">
+      <h1>
+        <i class="fas fa-chart-bar"></i>
+        Báo cáo
+      </h1>
+      <p>Quản lý và xuất báo cáo log bất thường và gợi ý</p>
+    </div>
+    
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="goBack()">
-        ← Quay lại
+      <button class="btn btn-primary" (click)="refreshData()" [disabled]="isLoading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+        Làm mới
       </button>
-      <button class="btn btn-danger" (click)="logout()">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Quay lại
+      </button>
+      <button class="btn btn-outline" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
         Đăng xuất
       </button>
     </div>
   </div>
 
-  <div class="teamlead-content">
-    <div class="teamlead-card">
-      <h2>Hệ thống báo cáo</h2>
-      <p>Đây là trang báo cáo dành cho người có quyền R_TEAMLEAD</p>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Đang xử lý...</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading" class="management-card">
+    <!-- Report Summary -->
+    <div *ngIf="showReportSummary && reportSummary" class="report-summary">
+      <div class="summary-header">
+        <h3>
+          <i class="fas fa-chart-pie"></i>
+          Báo cáo tổng hợp
+        </h3>
+        <button class="btn btn-secondary btn-sm" (click)="backToLogList()">
+          <i class="fas fa-arrow-left"></i>
+          Quay lại danh sách
+        </button>
+      </div>
       
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h3>Báo cáo tổng quan</h3>
-          <p>Tạo và xem các báo cáo tổng quan về hệ thống</p>
+      <div class="summary-content">
+        <div class="summary-item">
+          <div class="summary-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="summary-info">
+            <h4>Tổng số bản ghi log</h4>
+            <p class="summary-number">{{ reportSummary.total || 0 }}</p>
+          </div>
         </div>
         
-        <div class="feature-item">
-          <h3>Báo cáo chi tiết</h3>
-          <p>Báo cáo chi tiết theo từng module và chức năng</p>
+        <div class="summary-item">
+          <div class="summary-icon warning">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="summary-info">
+            <h4>Tổng số bản ghi bất thường</h4>
+            <p class="summary-number">{{ reportSummary.totalUnexpected || 0 }}</p>
+          </div>
         </div>
         
-        <div class="feature-item">
-          <h3>Xuất báo cáo</h3>
-          <p>Xuất báo cáo ra các định dạng Excel, PDF, Word</p>
+        <div class="summary-item">
+          <div class="summary-icon info">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <div class="summary-info">
+            <h4>Tổng số gợi ý</h4>
+            <p class="summary-number">{{ reportSummary.totalHint || 0 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Log Hints Table -->
+    <div *ngIf="!showReportSummary" class="table-container">
+      <div class="table-header">
+        <h3>
+          <i class="fas fa-list"></i>
+          Danh sách Log Bất thường và Gợi ý
+        </h3>
+        <div class="table-info">
+          <span class="total-info">
+            <i class="fas fa-database"></i>
+            Tổng số bản ghi: <strong>{{ totalElements }}</strong>
+          </span>
+          <div class="page-size-selector">
+            <label for="pageSizeSelect">
+              <i class="fas fa-list"></i>
+              Hiển thị:
+            </label>
+            <select 
+              id="pageSizeSelect" 
+              [(ngModel)]="pageSize" 
+              (change)="onPageSizeSelectChange($event)"
+              class="page-size-select"
+              [disabled]="isPaginationLoading"
+            >
+              <option *ngFor="let size of (pageSizeOptions || [])" [value]="size">
+                {{ size }} bản ghi
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn btn-primary" (click)="createReport()" [disabled]="isLoading">
+          <i class="fas fa-chart-pie"></i>
+          Tạo báo cáo
+        </button>
+        <button class="btn btn-success" (click)="exportCSV()" [disabled]="isLoading">
+          <i class="fas fa-file-csv"></i>
+          Tải CSV
+        </button>
+        <button class="btn btn-danger" (click)="exportPDF()" [disabled]="isLoading">
+          <i class="fas fa-file-pdf"></i>
+          Tải PDF
+        </button>
+      </div>
+
+      <!-- Loading Hints -->
+      <div *ngIf="isLoadingHints" class="loading-logs">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Đang tải danh sách log...</p>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div *ngIf="!isLoadingHints" class="table-wrapper">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th class="col-stt">STT</th>
+              <th class="col-database">
+                <i class="fas fa-database"></i>
+                Tên Database
+              </th>
+              <th class="col-sql">
+                <i class="fas fa-code"></i>
+                Câu lệnh SQL
+              </th>
+              <th class="col-suggestion">
+                <i class="fas fa-lightbulb"></i>
+                Gợi ý
+              </th>
+              <th class="col-status">
+                <i class="fas fa-check-circle"></i>
+                Tình trạng
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(logHints || []).length === 0" class="no-data">
+              <td colspan="5">
+                <div class="no-data-content">
+                  <i class="fas fa-inbox"></i>
+                  <h3>Không có dữ liệu log</h3>
+                  <p>Thử lại sau hoặc kiểm tra kết nối</p>
+                </div>
+              </td>
+            </tr>
+            <tr *ngFor="let hint of (logHints || []); let i = index" class="table-row">
+              <td class="col-stt">
+                <span class="stt-number">{{ (currentPage * pageSize) + i + 1 }}</span>
+              </td>
+              <td class="col-database">
+                <div class="database-info">
+                  <span class="database-label">
+                    <i class="fas fa-database"></i>
+                    {{ hint.database_name }}
+                  </span>
+                </div>
+              </td>
+              <td class="col-sql">
+                <div class="sql-content">
+                  <code class="sql-query">{{ hint.sql }}</code>
+                </div>
+              </td>
+              <td class="col-suggestion">
+                <div class="suggestion-content">
+                  <span class="suggestion-text">
+                    <i class="fas fa-lightbulb"></i>
+                    {{ hint.suggestion }}
+                  </span>
+                </div>
+              </td>
+              <td class="col-status">
+                <div class="status-content">
+                  <span class="status-badge" [ngClass]="hint.is_resolved ? 'resolved' : 'pending'">
+                    <i class="fas" [class.fa-check-circle]="hint.is_resolved" [class.fa-clock]="!hint.is_resolved"></i>
+                    {{ hint.is_resolved ? 'Đã xử lý' : 'Chờ xử lý' }}
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container" *ngIf="!isLoadingHints && totalPages > 1">
+        <div class="pagination-info">
+          <span class="page-info">
+            <i class="fas fa-info-circle"></i>
+            Hiển thị {{ getCurrentPageInfo() }} bản ghi
+          </span>
+          <span class="page-info">
+            <i class="fas fa-layer-group"></i>
+            Trang {{ currentPage + 1 }} / {{ totalPages }}
+          </span>
         </div>
         
-        <div class="feature-item">
-          <h3>Lịch sử báo cáo</h3>
-          <p>Xem và quản lý lịch sử các báo cáo đã tạo</p>
+        <div class="pagination-controls">
+          <!-- First Page Button -->
+          <button 
+            class="btn btn-pagination btn-first" 
+            (click)="goToPage(0)" 
+            [disabled]="!canGoPrevious() || isPaginationLoading"
+            title="Trang đầu"
+          >
+            <i class="fas fa-angle-double-left"></i>
+          </button>
+          
+          <!-- Previous Page Button -->
+          <button 
+            class="btn btn-pagination" 
+            (click)="previousPage()" 
+            [disabled]="!canGoPrevious() || isPaginationLoading"
+            title="Trang trước"
+          >
+            <i class="fas fa-chevron-left"></i>
+            Trước
+          </button>
+          
+          <!-- Page Numbers -->
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of (getPageNumbers() || [])" 
+              class="btn btn-page" 
+              [class.active]="page === currentPage"
+              [disabled]="isPaginationLoading"
+              (click)="goToPage(page)"
+              [title]="'Trang ' + (page + 1)"
+            >
+              {{ page + 1 }}
+            </button>
+          </div>
+          
+          <!-- Next Page Button -->
+          <button 
+            class="btn btn-pagination" 
+            (click)="nextPage()" 
+            [disabled]="!canGoNext() || isPaginationLoading"
+            title="Trang sau"
+          >
+            Sau
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          
+          <!-- Last Page Button -->
+          <button 
+            class="btn btn-pagination btn-last" 
+            (click)="goToPage(totalPages - 1)" 
+            [disabled]="!canGoNext() || isPaginationLoading"
+            title="Trang cuối"
+          >
+            <i class="fas fa-angle-double-right"></i>
+          </button>
+        </div>
+        
+        <!-- Pagination Loading Indicator -->
+        <div class="pagination-loading" *ngIf="isPaginationLoading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Đang tải...</span>
         </div>
       </div>
     </div>

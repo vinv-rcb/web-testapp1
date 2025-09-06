@@ -115,9 +115,12 @@ export interface DatabaseListResponse {
 // Interface cho response API log list
 export interface LogListResponse {
   status: number;
-  errorCode?: string | null;
-  errorDesc?: string | null;
-  data: DatabaseLog[];
+  errorcode?: string | null;
+  errordes?: string | null;
+  totalPages?: number;
+  totalElements?: number;
+  listLog: DatabaseLog[];
+  message?: string;
 }
 
 // Interface cho UnexpectedLog
@@ -131,9 +134,80 @@ export interface UnexpectedLog {
 // Interface cho response API unexpected logs
 export interface UnexpectedLogsResponse {
   status: number;
+  errorcode?: string | null;
+  errordes?: string | null;
+  totalPages?: number;
+  totalElements?: number;
+  listLog: UnexpectedLog[];
+  message?: string;
+}
+
+// Interface cho Database Suggestion
+export interface DatabaseSuggestion {
+  id: string;
+  database_name: string;
+  sql: string;
+  suggestion: string;
+  is_resolved: boolean;
+}
+
+// Interface cho response API suggestions
+export interface SuggestionsResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  data: DatabaseSuggestion[];
+}
+
+// Interface cho request mark suggestion as done
+export interface MarkDoneRequest {
+  id: string;
+}
+
+// Interface cho response API mark suggestion as done
+export interface MarkDoneResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+}
+
+// Interface cho Log Hint
+export interface LogHint {
+  database_name: string;
+  sql: string;
+  suggestion: string;
+  is_resolved: boolean;
+}
+
+// Interface cho response API log hint
+export interface LogHintResponse {
+  status: number;
   errorCode?: string | null;
   errorDesc?: string | null;
   totalPages?: number;
   totalElements?: number;
-  listLog: UnexpectedLog[];
+  listLog: LogHint[];
+}
+
+// Interface cho response API create report
+export interface CreateReportResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  total?: number;
+  totalUnexpected?: number;
+  totalHint?: number;
+}
+
+// Interface cho request export report
+export interface ExportReportRequest {
+  type: 'CSV' | 'PDF';
+}
+
+// Interface cho response API export report
+export interface ExportReportResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  data?: any; // byte array
 }

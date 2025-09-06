@@ -24,6 +24,7 @@ export class MonitorComponent implements OnInit {
   hasData = false;
   pageSizeOptions = [5, 10, 20, 50, 100];
   isPaginationLoading = false;
+  apiMessage = '';
 
   constructor(
     private authService: AuthService,
@@ -65,14 +66,21 @@ export class MonitorComponent implements OnInit {
           this.totalPages = response.totalPages || 0;
           this.totalElements = response.totalElements || 0;
           this.hasData = this.unexpectedLogs.length > 0;
+          
+          console.log('Unexpected logs loaded:', this.unexpectedLogs.length, 'items');
+          console.log('Total pages:', this.totalPages, 'Total elements:', this.totalElements);
+          console.log('Message:', response.message);
+          
+          // Lưu message từ API
+          this.apiMessage = response.message || '';
         } else if (response && response.status !== 200) {
-          if (response.errorCode === '401') {
+          if (response.errorcode === '401') {
             this.toastService.error('Hết phiên đăng nhập');
             setTimeout(() => {
               this.router.navigate(['/login']);
             }, 2000);
           } else {
-            this.toastService.error(response.errorDesc || 'Lấy danh sách log bất thường không thành công');
+            this.toastService.error(response.errordes || 'Lấy danh sách log bất thường không thành công');
           }
         } else {
           this.toastService.error('Lấy danh sách log bất thường không thành công');

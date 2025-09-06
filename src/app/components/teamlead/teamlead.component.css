@@ -1,132 +1,301 @@
-.teamlead-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-  padding: 20px;
+@import url('../../styles/management-common.css');
+
+/* ========================================
+   TEAMLEAD REPORT SPECIFIC STYLES
+   ======================================== */
+
+/* Report Summary Styles */
+.report-summary {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.teamlead-header {
+.summary-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
-  padding: 20px 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--border-light);
 }
 
-.teamlead-header h1 {
+.summary-header h3 {
+  color: var(--text-primary);
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
   margin: 0;
-  color: #333;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.header-actions {
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.summary-header h3 i {
+  color: var(--primary-color);
 }
 
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
-  transform: translateY(-2px);
-}
-
-.btn-danger {
-  background: #dc3545;
-  color: white;
-}
-
-.btn-danger:hover {
-  background: #c82333;
-  transform: translateY(-2px);
-}
-
-.teamlead-content {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.teamlead-card {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.teamlead-card h2 {
-  margin: 0 0 20px 0;
-  color: #333;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.teamlead-card p {
-  color: #666;
-  font-size: 16px;
-  margin-bottom: 30px;
-}
-
-.feature-grid {
+.summary-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
 }
 
-.feature-item {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 4px solid #ff9800;
-  transition: transform 0.3s ease;
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-color);
+  transition: all var(--transition-normal);
 }
 
-.feature-item:hover {
-  transform: translateY(-5px);
+.summary-item:hover {
+  transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.feature-item h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
+.summary-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-color);
+  color: var(--text-light);
+  font-size: var(--font-xl);
 }
 
-.feature-item p {
+.summary-icon.warning {
+  background: var(--warning-color);
+}
+
+.summary-icon.info {
+  background: var(--info-color);
+}
+
+.summary-info h4 {
+  color: var(--text-secondary);
+  font-size: var(--font-md);
+  font-weight: var(--weight-medium);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.summary-number {
+  color: var(--text-primary);
+  font-size: var(--font-xxl);
+  font-weight: var(--weight-bold);
   margin: 0;
-  color: #666;
-  font-size: 14px;
-  line-height: 1.5;
 }
 
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: var(--weight-medium);
+  transition: all var(--transition-normal);
+}
+
+.action-buttons .btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Table specific styles */
+.col-stt {
+  width: 80px;
+  text-align: center;
+}
+
+.stt-number {
+  background: var(--primary-color);
+  color: var(--text-light);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-bold);
+  font-size: var(--font-sm);
+}
+
+.col-suggestion {
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.col-status {
+  width: 150px;
+  text-align: center;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.resolved {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: var(--text-light);
+}
+
+.status-badge.pending {
+  background: linear-gradient(135deg, #ffc107, #fd7e14);
+  color: var(--text-dark);
+}
+
+/* Suggestion content styling */
+.suggestion-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.suggestion-text {
+  color: var(--text-primary);
+  font-size: var(--font-md);
+  font-weight: var(--weight-medium);
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+}
+
+.suggestion-text i {
+  color: var(--warning-color);
+  font-size: var(--font-lg);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* SQL query styling */
+.sql-query {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  line-height: 1.4;
+  word-break: break-all;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Database label styling */
+.database-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  font-size: var(--font-md);
+}
+
+.database-label i {
+  color: var(--primary-color);
+  font-size: var(--font-sm);
+}
+
+/* Loading states */
+.loading-logs {
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.loading-logs .loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.loading-logs .loading-spinner i {
+  color: var(--primary-color);
+  font-size: var(--font-xl);
+}
+
+.loading-logs .loading-spinner p {
+  color: var(--text-secondary);
+  font-size: var(--font-md);
+  margin: 0;
+}
+
+/* No data styling */
+.no-data-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.no-data-content i {
+  color: var(--text-muted);
+  font-size: var(--font-xxl);
+}
+
+.no-data-content h3 {
+  color: var(--text-secondary);
+  font-size: var(--font-lg);
+  font-weight: var(--weight-medium);
+  margin: 0;
+}
+
+.no-data-content p {
+  color: var(--text-muted);
+  font-size: var(--font-md);
+  margin: 0;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  .teamlead-header {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
+  .summary-content {
+    grid-template-columns: 1fr;
   }
   
-  .header-actions {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons .btn {
     justify-content: center;
   }
   
-  .feature-grid {
-    grid-template-columns: 1fr;
+  .col-suggestion {
+    min-width: 200px;
+    max-width: 250px;
+  }
+  
+  .sql-query {
+    font-size: var(--font-xs);
+  }
+  
+  .suggestion-text {
+    font-size: var(--font-sm);
   }
 }

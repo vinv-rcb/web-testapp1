@@ -1,41 +1,166 @@
-<div class="opti-container">
-  <div class="opti-header">
-    <h1>Sự kiện tối ưu Database</h1>
+<div class="management-container">
+  <!-- Header -->
+  <div class="management-header">
+    <div class="header-content">
+      <h1>
+        <i class="fas fa-lightbulb"></i>
+        Sự kiện tối ưu Database
+      </h1>
+      <p>Gợi ý tối ưu hóa database dựa trên phân tích query</p>
+    </div>
+    
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="goBack()">
-        ← Quay lại
+      <button class="btn btn-primary" (click)="refreshData()" [disabled]="isLoadingSuggestions">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoadingSuggestions"></i>
+        Làm mới
       </button>
-      <button class="btn btn-danger" (click)="logout()">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Quay lại
+      </button>
+      <button class="btn btn-outline" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
         Đăng xuất
       </button>
     </div>
   </div>
 
-  <div class="opti-content">
-    <div class="opti-card">
-      <h2>Hệ thống tối ưu Database</h2>
-      <p>Đây là trang sự kiện tối ưu database dành cho người có quyền R_OPTI</p>
-      
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h3>Tối ưu Query</h3>
-          <p>Phân tích và tối ưu các câu truy vấn database</p>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Đang tải danh sách database...</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading" class="management-card">
+    <div class="table-container">
+      <div class="table-header">
+        <h3>
+          <i class="fas fa-list"></i>
+          Danh sách Gợi ý Tối ưu
+        </h3>
+        <div class="table-info">
+          <span class="total-info">
+            <i class="fas fa-database"></i>
+            Tổng số gợi ý: <strong>{{ suggestions.length }}</strong>
+          </span>
         </div>
-        
-        <div class="feature-item">
-          <h3>Index Management</h3>
-          <p>Quản lý và tối ưu các index database</p>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-content">
+          <div class="filter-group">
+            <label for="databaseSelect">
+              <i class="fas fa-filter"></i>
+              Chọn Database:
+            </label>
+            <select 
+              id="databaseSelect"
+              [(ngModel)]="selectedDatabase"
+              (change)="onDatabaseChange()"
+              class="form-select"
+              [disabled]="isLoading"
+            >
+              <option 
+                *ngFor="let db of databaseList" 
+                [value]="db.database_name"
+              >
+                {{ db.database_name }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-info">
+            <span class="info-text">
+              <i class="fas fa-info-circle"></i>
+              Hiển thị gợi ý cho: <strong>{{ selectedDatabase }}</strong>
+            </span>
+          </div>
         </div>
-        
-        <div class="feature-item">
-          <h3>Performance Tuning</h3>
-          <p>Điều chỉnh hiệu suất database</p>
+      </div>
+
+      <!-- Loading Suggestions -->
+      <div *ngIf="isLoadingSuggestions" class="loading-logs">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Đang tải danh sách gợi ý...</p>
         </div>
-        
-        <div class="feature-item">
-          <h3>Auto Optimization</h3>
-          <p>Tự động tối ưu database theo lịch trình</p>
-        </div>
+      </div>
+
+      <!-- Table -->
+      <div *ngIf="!isLoadingSuggestions" class="table-wrapper">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th class="col-database">
+                <i class="fas fa-database"></i>
+                Tên Database
+              </th>
+              <th class="col-sql">
+                <i class="fas fa-code"></i>
+                Câu lệnh SQL
+              </th>
+              <th class="col-suggestion">
+                <i class="fas fa-lightbulb"></i>
+                Gợi ý
+              </th>
+              <th class="col-action">
+                <i class="fas fa-cogs"></i>
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="suggestions.length === 0" class="no-data">
+              <td colspan="4">
+                <div class="no-data-content">
+                  <i class="fas fa-inbox"></i>
+                  <h3>Không có gợi ý nào</h3>
+                  <p>Chọn database khác hoặc thử lại sau</p>
+                </div>
+              </td>
+            </tr>
+            <tr *ngFor="let suggestion of suggestions; let i = index" class="table-row">
+              <td class="col-database">
+                <div class="database-info">
+                  <span class="database-label">
+                    <i class="fas fa-database"></i>
+                    {{ suggestion.database_name }}
+                  </span>
+                </div>
+              </td>
+              <td class="col-sql">
+                <div class="sql-content">
+                  <code class="sql-query">{{ suggestion.sql }}</code>
+                </div>
+              </td>
+              <td class="col-suggestion">
+                <div class="suggestion-content">
+                  <span class="suggestion-text">
+                    <i class="fas fa-lightbulb"></i>
+                    {{ suggestion.suggestion }}
+                  </span>
+                </div>
+              </td>
+              <td class="col-action">
+                <div class="action-buttons">
+                  <button 
+                    class="btn btn-success btn-sm" 
+                    (click)="markAsDone(suggestion)"
+                    [disabled]="isLoadingSuggestions"
+                    title="Đánh dấu hoàn thành"
+                  >
+                    <i class="fas fa-check"></i>
+                    Mark as Done
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

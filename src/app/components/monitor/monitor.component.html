@@ -56,6 +56,10 @@
             <i class="fas fa-database"></i>
             Tổng số bản ghi: <strong>{{ totalElements }}</strong>
           </span>
+          <span class="api-message" *ngIf="apiMessage">
+            <i class="fas fa-info-circle"></i>
+            {{ apiMessage }}
+          </span>
           <div class="page-size-selector">
             <label for="pageSizeSelect">
               <i class="fas fa-list"></i>
@@ -123,7 +127,6 @@
                       <i class="fas fa-clock"></i>
                       {{ log.exec_time }}
                     </span>
-                    <small class="time-label">thời gian thực thi</small>
                   </div>
                 </td>
                 <td class="col-count">
@@ -132,7 +135,6 @@
                       <i class="fas fa-repeat"></i>
                       {{ log.exe_count }}
                     </span>
-                    <small class="count-label">lần thực hiện</small>
                   </div>
                 </td>
                 <td class="col-warning">

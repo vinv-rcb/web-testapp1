@@ -48,6 +48,24 @@
   flex-wrap: wrap;
 }
 
+.api-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--info-color);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  background: rgba(13, 202, 240, 0.1);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--info-color);
+}
+
+.api-message i {
+  color: var(--info-color);
+  font-size: var(--font-sm);
+}
+
 .total-info {
   color: var(--text-secondary);
   font-size: var(--font-md);
