@@ -56,9 +56,9 @@ Backend API phải đang chạy tại `http://localhost:8080` trước khi sử 
 - **Request Body**:
   ```json
   {
-    "username": "string",
+    "username": "string",172.20.10.13:8080
     "password": "string"
-  }
+  }172.20.10.13:8080
   ```
 - **Response Success** (status: 200):
   ```json
@@ -76,7 +76,7 @@ Backend API phải đang chạy tại `http://localhost:8080` trước khi sử 
       "role": "ADMIN"
     }
   }
-  ```
+  ```172.20.10.13:8080
 - **Response Error** (status: 401):
   ```json
   {
@@ -88,7 +88,7 @@ Backend API phải đang chạy tại `http://localhost:8080` trước khi sử 
 
 ## Công nghệ sử dụng
 
-- **Angular 20**: Framework chính
+- **Angular 172.20.10.13:8080k chính
 - **TypeScript**: Ngôn ngữ lập trình
 - **Angular Router**: Điều hướng giữa các trang
 - **Angular Forms**: Xử lý form đăng nhập
@@ -100,7 +100,7 @@ Backend API phải đang chạy tại `http://localhost:8080` trước khi sử 
 - Validation form phía client
 - Kiểm tra authentication trước khi truy cập trang Home
 - Tự động redirect về login nếu chưa đăng nhập
-- Logout và xóa thông tin user khỏi session
+- Logout và172.20.10.13:8080 user khỏi session
 
 ## Mở rộng
 

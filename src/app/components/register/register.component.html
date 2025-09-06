@@ -1,0 +1,77 @@
+<div class="register-container">
+  <div class="register-card">
+    <h2>Đăng Ký</h2>
+    
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="username">Tên đăng nhập:</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="registerRequest.username"
+          required
+          placeholder="Nhập tên đăng nhập"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mật khẩu:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="registerRequest.password"
+          required
+          placeholder="Nhập mật khẩu"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="registerRequest.email"
+          required
+          placeholder="Nhập email"
+          class="form-control"
+        />
+      </div>
+
+      <!-- Thông báo lỗi -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Thông báo thành công -->
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+
+      <div class="button-group">
+        <button
+          type="submit"
+          [disabled]="!isFormValid() || !isEmailValid() || isLoading"
+          class="btn btn-register"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">Đăng Ký</span>
+          <span *ngIf="isLoading">Đang xử lý...</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="goToLogin()"
+          class="btn btn-login"
+          [disabled]="isLoading"
+        >
+          Đăng Nhập
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

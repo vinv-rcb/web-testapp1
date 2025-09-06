@@ -29,3 +29,20 @@ export interface LoginResponse {
     role: string;
   };
 }
+
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface RegisterResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  data?: {
+    username: string;
+    email: string;
+    message: string;
+  };
+}
