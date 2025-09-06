@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from '../models/user.model';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, DatabaseListResponse, LogListResponse } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -127,6 +127,30 @@ export class AuthService {
   private clearStorage(): void {
     localStorage.removeItem('current_user');
     localStorage.removeItem('auth_token');
+  }
+
+  // API: Lấy danh sách database
+  getDatabaseList(): Observable<DatabaseListResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    return this.http.get<DatabaseListResponse>(`${this.API_URL}/sqlanalys/database`, { headers });
+  }
+
+  // API: Lấy danh sách log theo database
+  getLogList(database?: string): Observable<LogListResponse> {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+    
+    let url = `${this.API_URL}/sqlanalys/log`;
+    if (database && database !== 'Tất cả') {
+      url += `?database=${encodeURIComponent(database)}`;
+    }
+    
+    return this.http.get<LogListResponse>(url, { headers });
   }
 
   logout(): void {

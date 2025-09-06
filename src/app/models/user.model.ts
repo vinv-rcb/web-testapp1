@@ -89,3 +89,33 @@ export interface StatusOption {
   code: string;
   name: string;
 }
+
+// Interface cho Database
+export interface Database {
+  database_name: string;
+  database_desc: string;
+}
+
+// Interface cho DatabaseLog
+export interface DatabaseLog {
+  database_name: string;
+  sql: string;
+  exec_time: number;
+  exe_count: number;
+}
+
+// Interface cho response API database list
+export interface DatabaseListResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  data: Database[];
+}
+
+// Interface cho response API log list
+export interface LogListResponse {
+  status: number;
+  errorCode?: string | null;
+  errorDesc?: string | null;
+  data: DatabaseLog[];
+}

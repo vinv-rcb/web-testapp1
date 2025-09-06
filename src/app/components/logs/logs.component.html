@@ -1,40 +1,173 @@
 <div class="logs-container">
+  <!-- Header -->
   <div class="logs-header">
-    <h1>Quản lý Log</h1>
+    <div class="header-content">
+      <h1>
+        <i class="fas fa-database"></i>
+        Quản lý Log Database
+      </h1>
+      <p>Theo dõi và quản lý log thực thi SQL trên các database</p>
+    </div>
+    
     <div class="header-actions">
       <button class="btn btn-secondary" (click)="goBack()">
-        ← Quay lại
+        <i class="fas fa-arrow-left"></i>
+        Quay lại
       </button>
-      <button class="btn btn-danger" (click)="logout()">
+      <button class="btn btn-outline" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
         Đăng xuất
       </button>
     </div>
   </div>
 
-  <div class="logs-content">
-    <div class="logs-card">
-      <h2>Hệ thống quản lý Log</h2>
-      <p>Đây là trang quản lý log dành cho người có quyền R_LOGS_MANAGE</p>
-      
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h3>Xem Log hệ thống</h3>
-          <p>Xem và tìm kiếm các log hoạt động của hệ thống</p>
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-card">
+      <div class="filter-content">
+        <div class="filter-group">
+          <label for="databaseSelect">
+            <i class="fas fa-filter"></i>
+            Chọn Database:
+          </label>
+          <select 
+            id="databaseSelect"
+            [(ngModel)]="selectedDatabase"
+            (change)="onDatabaseChange()"
+            class="database-select"
+            [disabled]="isLoading"
+          >
+            <option 
+              *ngFor="let db of databaseList" 
+              [value]="db.database_name"
+            >
+              {{ db.database_name }}
+            </option>
+          </select>
         </div>
         
-        <div class="feature-item">
-          <h3>Xuất Log</h3>
-          <p>Xuất log ra file Excel, CSV hoặc PDF</p>
+        <div class="filter-info">
+          <span class="info-text">
+            <i class="fas fa-info-circle"></i>
+            Hiển thị log cho: <strong>{{ selectedDatabase }}</strong>
+          </span>
         </div>
-        
-        <div class="feature-item">
-          <h3>Lọc Log</h3>
-          <p>Lọc log theo thời gian, mức độ, người dùng</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Đang tải danh sách database...</p>
+    </div>
+  </div>
+
+  <!-- Logs Table -->
+  <div *ngIf="!isLoading" class="logs-content">
+    <div class="table-container">
+      <div class="table-header">
+        <h3>
+          <i class="fas fa-list"></i>
+          Danh sách Log SQL
+        </h3>
+        <div class="table-actions">
+          <button 
+            class="btn btn-primary btn-sm" 
+            (click)="loadLogList()"
+            [disabled]="isLoadingLogs"
+          >
+            <i class="fas fa-sync-alt" [class.fa-spin]="isLoadingLogs"></i>
+            Làm mới
+          </button>
         </div>
-        
-        <div class="feature-item">
-          <h3>Cấu hình Log</h3>
-          <p>Thiết lập các tham số ghi log hệ thống</p>
+      </div>
+
+      <!-- Loading Logs -->
+      <div *ngIf="isLoadingLogs" class="loading-logs">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Đang tải dữ liệu log...</p>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div *ngIf="!isLoadingLogs" class="table-wrapper">
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th class="col-database">
+                <i class="fas fa-database"></i>
+                Tên Database
+              </th>
+              <th class="col-sql">
+                <i class="fas fa-code"></i>
+                SQL Query
+              </th>
+              <th class="col-time">
+                <i class="fas fa-clock"></i>
+                Thời gian xử lý
+              </th>
+              <th class="col-count">
+                <i class="fas fa-repeat"></i>
+                Số lần chạy
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="logList.length === 0" class="no-data">
+              <td colspan="4">
+                <div class="no-data-content">
+                  <i class="fas fa-inbox"></i>
+                  <p>Không có dữ liệu log</p>
+                  <small>Chọn database khác hoặc thử lại sau</small>
+                </div>
+              </td>
+            </tr>
+            <tr *ngFor="let log of logList; let i = index" class="log-row">
+              <td class="col-database">
+                <div class="database-info">
+                  <span class="database-name">{{ log.database_name }}</span>
+                </div>
+              </td>
+              <td class="col-sql">
+                <div class="sql-content">
+                  <code class="sql-query">{{ log.sql }}</code>
+                </div>
+              </td>
+              <td class="col-time">
+                <div class="time-info">
+                  <span class="execution-time" [class.slow]="log.exec_time > 1000">
+                    {{ formatExecutionTime(log.exec_time) }}
+                  </span>
+                  <small class="time-label">thời gian thực thi</small>
+                </div>
+              </td>
+              <td class="col-count">
+                <div class="count-info">
+                  <span class="execution-count">{{ log.exe_count }}</span>
+                  <small class="count-label">lần thực thi</small>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Table Footer -->
+      <div *ngIf="!isLoadingLogs && logList.length > 0" class="table-footer">
+        <div class="footer-info">
+          <span class="total-count">
+            <i class="fas fa-list"></i>
+            Tổng cộng: <strong>{{ logList.length }}</strong> bản ghi
+          </span>
+        </div>
+        <div class="footer-actions">
+          <button class="btn btn-outline btn-sm" (click)="loadLogList()">
+            <i class="fas fa-sync-alt"></i>
+            Làm mới dữ liệu
+          </button>
         </div>
       </div>
     </div>
