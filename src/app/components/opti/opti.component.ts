@@ -41,7 +41,24 @@ export class OptiComponent implements OnInit {
   }
 
   hasPermission(permission: string): boolean {
-    return this.user && (this.user.role === 'admin' || this.user.permissions?.includes(permission));
+    if (!this.user) return false;
+    
+    // Kiểm tra quyền cụ thể từ permissions array
+    if (this.user.permissions && Array.isArray(this.user.permissions)) {
+      return this.user.permissions.includes(permission);
+    }
+    
+    // Kiểm tra role trực tiếp
+    if (this.user.role === permission) {
+      return true;
+    }
+    
+    // Admin có tất cả quyền
+    if (this.user.role === 'R_ADMIN') {
+      return true;
+    }
+    
+    return false;
   }
 
   goBack(): void {

@@ -29,7 +29,8 @@ export class AuthService {
               ngayVao: response.data.joinDate,
               soDienThoai: response.data.phoneNumber,
               email: response.data.email,
-              role: response.data.role.toLowerCase()
+              role: response.data.role,
+              permissions: [response.data.role] // Lưu role như một permission
             };
             // Save to localStorage
             this.saveUserToStorage();

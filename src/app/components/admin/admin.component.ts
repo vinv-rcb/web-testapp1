@@ -48,12 +48,33 @@ export class AdminComponent implements OnInit {
     this.user = this.authService.getCurrentUser();
     
     // Kiểm tra quyền admin
-    if (!this.user || this.user.role !== 'admin') {
+    if (!this.user || !this.hasPermission('R_ADMIN')) {
       this.router.navigate(['/home']);
       return;
     }
 
     this.loadUsersList();
+  }
+
+  hasPermission(permission: string): boolean {
+    if (!this.user) return false;
+    
+    // Kiểm tra quyền cụ thể từ permissions array
+    if (this.user.permissions && Array.isArray(this.user.permissions)) {
+      return this.user.permissions.includes(permission);
+    }
+    
+    // Kiểm tra role trực tiếp
+    if (this.user.role === permission) {
+      return true;
+    }
+    
+    // Admin có tất cả quyền
+    if (this.user.role === 'R_ADMIN') {
+      return true;
+    }
+    
+    return false;
   }
 
   goBack(): void {

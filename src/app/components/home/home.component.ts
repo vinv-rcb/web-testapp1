@@ -40,27 +40,42 @@ export class HomeComponent implements OnInit {
   hasPermission(permission: string): boolean {
     if (!this.user) return false;
     
-    // Admin có tất cả quyền
-    if (this.user.role === 'admin') return true;
-    
-    // Kiểm tra quyền cụ thể
+    // Kiểm tra quyền cụ thể từ permissions array
     if (this.user.permissions && Array.isArray(this.user.permissions)) {
       return this.user.permissions.includes(permission);
     }
     
-    // Fallback: kiểm tra role-based permissions
+    // Kiểm tra role trực tiếp
+    if (this.user.role === permission) {
+      return true;
+    }
+    
+    // Mapping role-based permissions
     const rolePermissions: { [key: string]: string[] } = {
-      'admin': ['R_ADMIN', 'R_LOGS_MANAGE', 'R_MONITOR', 'R_OPTI', 'R_TEAMLEAD'],
-      'user': ['R_LOGS_MANAGE', 'R_TEAMLEAD'], // User mặc định có một số quyền
-      'manager': ['R_LOGS_MANAGE', 'R_MONITOR', 'R_TEAMLEAD'],
-      'dba': ['R_MONITOR', 'R_OPTI']
+      'R_ADMIN': ['R_ADMIN', 'R_LOGS_MANAGE', 'R_MONITOR', 'R_OPTI', 'R_TEAMLEAD'],
+      'R_LOGS_MANAGE': ['R_LOGS_MANAGE'],
+      'R_MONITOR': ['R_MONITOR'],
+      'R_OPTI': ['R_OPTI'],
+      'R_TEAMLEAD': ['R_TEAMLEAD']
     };
     
-    const userRole = this.user.role?.toLowerCase();
+    const userRole = this.user.role;
     return rolePermissions[userRole]?.includes(permission) || false;
   }
 
   navigateTo(path: string): void {
     this.router.navigate([path]);
+  }
+
+  getRoleDisplayName(role: string): string {
+    const roleNames: { [key: string]: string } = {
+      'R_ADMIN': 'Quản trị viên',
+      'R_LOGS_MANAGE': 'Quản lý Log',
+      'R_MONITOR': 'Giám sát Database',
+      'R_OPTI': 'Tối ưu Database',
+      'R_TEAMLEAD': 'Báo cáo'
+    };
+    
+    return roleNames[role] || role;
   }
 }
